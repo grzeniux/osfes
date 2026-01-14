@@ -5,15 +5,15 @@
 SemaphoreHandle_t sem;
 
 void Thread2(void* param) {
-    vTaskDelay(600);
+    vTaskDelay(3000);
     xSemaphoreGive(sem);
     vTaskDelete(NULL);
 }
 
 void Thread1(void* param) {
     TickType_t t = xTaskGetTickCount();
-    vTaskDelay(200);
-    xSemaphoreTake(sem, 400);
+    vTaskDelay(1000);
+    xSemaphoreTake(sem, 1000);
     printf("T = %d", xTaskGetTickCount() - t);
     vTaskDelete(NULL);
 }

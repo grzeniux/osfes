@@ -2,23 +2,30 @@
 // Podaj jaką wartość T program wypisze na standardowe wyjście i wyjaśnij dlaczego taką, 
 // opisując przebieg wykonywania programu.
 
+SemaphoreHandle_t mux;
+
 void Thread2(void* param) {
-    volatile unsigned int i;
-    for (i = 0; i < 1000000; i++) {
-        i++; i--;
+    if (pdTRUE == xSemaphoreTakeRecursive(mux, 5000)) {
+        vTaskDelay(3000);
+        xSemaphoreGiveRecursive(mux);
     }
-    printf("Thread2\n");
     vTaskDelete(NULL);
 }
 
 void Thread1(void* param) {
-    xTaskCreate(Thread2, "thread2", 512, NULL, 4, NULL);
-    taskYIELD();
-    printf("Thread1\n");
+    TickType_t t = xTaskGetTickCount();
+    vTaskDelay(1000);
+    if (pdTRUE == xSemaphoreTakeRecursive(mux, 5000)) {
+        vTaskDelay(1000);
+        xSemaphoreGiveRecursive(mux);
+    }
+    printf("T = %d", xTaskGetTickCount() - t);
     vTaskDelete(NULL);
 }
 
 int main(void) {
-    xTaskCreate(Thread1, "thread1", 512, NULL, 2, NULL);
+    mux = xSemaphoreCreateRecursiveMutex();
+    xTaskCreate(Thread1, "thread1", 512, NULL, 3, NULL);
+    xTaskCreate(Thread2, "thread2", 512, NULL, 3, NULL);
     vTaskStartScheduler();
 }

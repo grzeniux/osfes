@@ -5,9 +5,9 @@
 SemaphoreHandle_t mux;
 
 void Thread2(void* param) {
-    vTaskDelay(100);
-    if (pdTRUE == xSemaphoreTake(mux, 800)) {
-        vTaskDelay(1500);
+    vTaskDelay(2000);
+    if (pdTRUE == xSemaphoreTake(mux, 5000)) {
+        vTaskDelay(3000);
         xSemaphoreGive(mux);
     }
     vTaskDelete(NULL);
@@ -15,9 +15,9 @@ void Thread2(void* param) {
 
 void Thread1(void* param) {
     TickType_t t = xTaskGetTickCount();
-    vTaskDelay(200);
-    if (pdTRUE == xSemaphoreTake(mux, 500)) {
-        vTaskDelay(100);
+    vTaskDelay(1000);
+    if (pdTRUE == xSemaphoreTake(mux, 5000)) {
+        vTaskDelay(1000);
         xSemaphoreGive(mux);
     }
     printf("T = %d", xTaskGetTickCount() - t);
@@ -32,13 +32,13 @@ int main(void) {
 }
 
 Odp:
-T=700
+T = 2000
 
 1. Thread2 startuje jako pierwszy bo ma wyższy priorytet
-2. Thread2 Wpada w vTaskDelay(100) wiec oddaje prace Thread1 - 
-3. Startuje Thread1 - ustala aktualny czas czyli T=0
-4. Thread1 Wpada w vTaskDelay(200) wiec oddaje prace do Thread2
-5. T=100 budzi się Thread2 (wyzszy priorytet) bierze mutexa, trzyma go az do T=1600 i oddaje go i usuwa się
-6. W T=200 Thread 1 próbuje zajac mutex ale jest zajety wiec wraca do stanu blocked
-7. Maksymalny czas oczekiwania na mutex do 500, wiec Thread1 podda sie w chwili T=700
+2. Thread2 jest uśpiony aż do T=2000
+3. T=0 startuje Thread1 i ustawia czas T=0, nastepnie jest uspiony az do T=1000
+4. T=1000 startuje Thread1 i bierze mutexa, czeka az do T=2000 i oddaje mutex i wypisuje T=2000
+5. T=2000 Startuje Thread2, bierze mutexa i czeka az do T=5000 i oddaje mutex i usuwa się
+
+
 
