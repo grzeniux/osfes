@@ -22,6 +22,9 @@ int main(void) {
     xTaskCreate(Thread, "thread2", 512, NULL, 4, NULL);
     vTaskStartScheduler();
 }
+Odp:
+counter = 999
+counter = 1000
 
 1. Thread2 startuje jako pierwszy bo ma wyższy prioryter
 2. Thread2 zwieksza swój counter na 1 i wpada w vTaskDelay(1)
