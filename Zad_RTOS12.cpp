@@ -25,7 +25,7 @@ int main(void) {
     vTaskStartScheduler();
 }
 Odp:
-T=
+T= 600
 
 1. Tworzony jest pusty semafor
     Thread1 startuje pierwszy (wyższy priorytet).
