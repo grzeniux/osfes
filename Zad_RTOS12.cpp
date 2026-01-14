@@ -2,22 +2,25 @@
 // Podaj jaką wartość T program wypisze na standardowe wyjście i wyjaśnij dlaczego taką, 
 // opisując przebieg wykonywania programu.
 
-static volatile int run = 1;
+SemaphoreHandle_t sem;
 
-void Thread(void* param) {
-    volatile int counter = 0;
-    while (run) {
-        counter++;
-        if (counter == 1000) {
-            run = 0;
-        }
-    }
-    printf("counter = %d\n", counter);
+void Thread2(void* param) {
+    vTaskDelay(600);
+    xSemaphoreGive(sem);
+    vTaskDelete(NULL);
+}
+
+void Thread1(void* param) {
+    TickType_t t = xTaskGetTickCount();
+    vTaskDelay(200);
+    xSemaphoreTake(sem, 400);
+    printf("T = %d", xTaskGetTickCount() - t);
     vTaskDelete(NULL);
 }
 
 int main(void) {
-    xTaskCreate(Thread, "thread1", 512, NULL, 2, NULL);
-    xTaskCreate(Thread, "thread2", 512, NULL, 4, NULL);
+    sem = xSemaphoreCreateBinary();
+    xTaskCreate(Thread1, "thread1", 512, NULL, 5, NULL);
+    xTaskCreate(Thread2, "thread2", 512, NULL, 3, NULL);
     vTaskStartScheduler();
 }
