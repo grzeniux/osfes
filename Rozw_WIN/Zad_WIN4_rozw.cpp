@@ -11,32 +11,34 @@
 
 #include <windows.h>
 #include <stdio.h>
-
+HANDLE hMutex;
 DWORD myThread(void *p) {
     char str[1024];
     // while not end of file
     while (!feof(p)) {
         // get single line of text
+        WaitForSingleObject(hMutex, INFINITE);
         if (NULL != fgets(str, sizeof(str), p)) {
             // print line to standard output
             fputs(str, stdout);
+            ReleaseMutex(hMutex);
         }
     }
     return 0;
 }
-
 int main(void) {
+
+    hMutex = CreateMutex(NULL,FALSE,NULL);
+    HANDLE handlers[3] = {NULL};
     // open text file
     FILE * pFile = fopen("input.txt", "r");
     // check if file was opened
     if (NULL != pFile) {
-        // thread number 1
-        CreateThread(NULL, 0, myThread, pFile, 0, NULL);
-        // thread number 2
-        CreateThread(NULL, 0, myThread, pFile, 0, NULL);
-        // thread number 3
-        CreateThread(NULL, 0, myThread, pFile, 0, NULL);
-        Sleep(3000);
+        handlers [0] = CreateThread(NULL, 0, myThread, pFile, 0, NULL);         // thread number 1
+        handlers [1] = CreateThread(NULL, 0, myThread, pFile, 0, NULL);         // thread number 2
+        handlers [2] = CreateThread(NULL, 0, myThread, pFile, 0, NULL);         // thread number 3
+        //Sleep(3000);
+        WaitForMultipleObjects(3, handlers, TRUE,INFINITE);
         // close file
         fclose(pFile);
     } else {
