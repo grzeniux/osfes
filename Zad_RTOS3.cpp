@@ -31,6 +31,8 @@ int main(void) {
     vTaskStartScheduler();
 }
 
+Odp:
+T=700
 
 1. Thread2 startuje jako pierwszy bo ma wyższy priorytet
 2. Thread2 Wpada w vTaskDelay(100) wiec oddaje prace Thread1 - 
@@ -39,5 +41,4 @@ int main(void) {
 5. T=100 budzi się Thread2 (wyzszy priorytet) bierze mutexa, trzyma go az do T=1600 i oddaje go i usuwa się
 6. W T=200 Thread 1 próbuje zajac mutex ale jest zajety wiec wraca do stanu blocked
 7. Maksymalny czas oczekiwania na mutex do 500, wiec Thread1 podda sie w chwili T=700
-T=700
 
