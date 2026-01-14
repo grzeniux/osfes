@@ -31,6 +31,9 @@ int main(void) {
     vTaskStartScheduler();
 }
 
+Odp:
+T = 2000
+
 1. Thread2 startuje jako pierwszy bo ma wyższy priorytet
 2. Thread2 jest uśpiony aż do T=2000
 3. T=0 startuje Thread1 i ustawia czas T=0, nastepnie jest uspiony az do T=1000
