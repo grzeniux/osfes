@@ -5,22 +5,29 @@
 SemaphoreHandle_t sem;
 
 void Thread2(void* param) {
-    vTaskDelay(3000);
+    vTaskDelay(2000);
     xSemaphoreGive(sem);
     vTaskDelete(NULL);
 }
 
 void Thread1(void* param) {
+    static volatile int i;
     TickType_t t = xTaskGetTickCount();
-    vTaskDelay(1000);
-    xSemaphoreTake(sem, 1000);
+    for (i = 0; i < 1000; i++) {
+        if (pdTRUE == xSemaphoreTake(sem, 0)) {
+            printf("OK,");
+            i = 1000;
+        } else {
+            vTaskDelay(1);
+        }
+    }
     printf("T = %d", xTaskGetTickCount() - t);
     vTaskDelete(NULL);
 }
 
 int main(void) {
     sem = xSemaphoreCreateBinary();
-    xTaskCreate(Thread1, "thread1", 512, NULL, 5, NULL);
+    xTaskCreate(Thread1, "thread1", 512, NULL, 3, NULL);
     xTaskCreate(Thread2, "thread2", 512, NULL, 3, NULL);
     vTaskStartScheduler();
 }

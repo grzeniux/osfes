@@ -11,7 +11,6 @@ void Thread(void* param) {
         if (counter == 1000) {
             run = 0;
         }
-        vTaskDelay(1);
     }
     printf("counter = %d\n", counter);
     vTaskDelete(NULL);

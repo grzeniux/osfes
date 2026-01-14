@@ -2,31 +2,22 @@
 // Podaj jaką wartość T program wypisze na standardowe wyjście i wyjaśnij dlaczego taką, 
 // opisując przebieg wykonywania programu.
 
-SemaphoreHandle_t mux;
-
 void Thread2(void* param) {
-    vTaskDelay(100);
-    if (pdTRUE == xSemaphoreTake(mux, 800)) {
-        vTaskDelay(500);
-        xSemaphoreGive(mux);
+    static volatile unsigned int i;
+    for (i = 0; i < 9999999; i++) {
+        i++; i--;
     }
+    printf("Thread2\n");
     vTaskDelete(NULL);
 }
 
 void Thread1(void* param) {
-    TickType_t t = xTaskGetTickCount();
-    vTaskDelay(300);
-    if (pdTRUE == xSemaphoreTake(mux, 500)) {
-        vTaskDelay(100);
-        xSemaphoreGive(mux);
-    }
-    printf("T = %d", xTaskGetTickCount() - t);
+    xTaskCreate(Thread2, "thread2", 512, NULL, 2, NULL);
+    printf("Thread1\n");
     vTaskDelete(NULL);
 }
 
 int main(void) {
-    mux = xSemaphoreCreateMutex();
-    xTaskCreate(Thread1, "thread1", 512, NULL, 5, NULL); // Priorytet 5
-    xTaskCreate(Thread2, "thread2", 512, NULL, 3, NULL); // Priorytet 3
+    xTaskCreate(Thread1, "thread1", 512, NULL, 4, NULL);
     vTaskStartScheduler();
 }
