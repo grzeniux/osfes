@@ -21,7 +21,6 @@ int main(void) {
     xTaskCreate(Thread, "thread2", 512, NULL, 4, NULL);
     vTaskStartScheduler();
 }
-
 Odp:
 Counter=1000
 Counter=0

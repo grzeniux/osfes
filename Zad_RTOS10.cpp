@@ -1,9 +1,7 @@
 // Korzystając z systemu FreeRTOS uruchomiono poniższy program. 
 // Podaj jaką wartość T program wypisze na standardowe wyjście i wyjaśnij dlaczego taką, 
 // opisując przebieg wykonywania programu.
-
 SemaphoreHandle_t mux;
-
 void Thread2(void* param) {
     if (pdTRUE == xSemaphoreTakeRecursive(mux, 5000)) {
         vTaskDelay(3000);
@@ -11,7 +9,6 @@ void Thread2(void* param) {
     }
     vTaskDelete(NULL);
 }
-
 void Thread1(void* param) {
     TickType_t t = xTaskGetTickCount();
     vTaskDelay(1000);
@@ -22,7 +19,6 @@ void Thread1(void* param) {
     printf("T = %d", xTaskGetTickCount() - t);
     vTaskDelete(NULL);
 }
-
 int main(void) {
     mux = xSemaphoreCreateRecursiveMutex();
     xTaskCreate(Thread1, "thread1", 512, NULL, 3, NULL);

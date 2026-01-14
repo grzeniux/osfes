@@ -1,15 +1,12 @@
 // Korzystając z systemu FreeRTOS uruchomiono poniższy program. 
 // Podaj jaką wartość T program wypisze na standardowe wyjście i wyjaśnij dlaczego taką, 
 // opisując przebieg wykonywania programu.
-
 SemaphoreHandle_t sem;
-
 void Thread2(void* param) {
     vTaskDelay(1000);
     xSemaphoreGive(sem);
     vTaskDelete(NULL);
 }
-
 void Thread1(void* param) {
     static volatile int i;
     TickType_t t = xTaskGetTickCount();
@@ -24,17 +21,14 @@ void Thread1(void* param) {
     printf("T = %d", xTaskGetTickCount() - t);
     vTaskDelete(NULL);
 }
-
 int main(void) {
     sem = xSemaphoreCreateBinary();
     xTaskCreate(Thread1, "thread1", 512, NULL, 4, NULL);
     xTaskCreate(Thread2, "thread2", 512, NULL, 2, NULL);
     vTaskStartScheduler();
 }
-
 Odp:
 T=1001
-
 1. Thread1 ma większy priorytet, więc startuje i ustala czas T=0
 2. Thread1 wykonuje xSemaphoreTake(sem, 0). Ponieważ semafor jest pusty, funkcja zwraca błąd (nie blokuje, bo czas oczekiwania to 0).
    Thread1 wchodzi do bloku else i wykonuje vTaskDelay(1).

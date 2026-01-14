@@ -1,9 +1,7 @@
 // Korzystając z systemu FreeRTOS uruchomiono poniższy program. 
 // Podaj jaką wartość T program wypisze na standardowe wyjście i wyjaśnij dlaczego taką, 
 // opisując przebieg wykonywania programu.
-
 SemaphoreHandle_t mux;
-
 void Thread2(void* param) {
     vTaskDelay(2000);
     if (pdTRUE == xSemaphoreTake(mux, 5000)) {
@@ -12,7 +10,6 @@ void Thread2(void* param) {
     }
     vTaskDelete(NULL);
 }
-
 void Thread1(void* param) {
     TickType_t t = xTaskGetTickCount();
     vTaskDelay(1000);
@@ -23,14 +20,12 @@ void Thread1(void* param) {
     printf("T = %d", xTaskGetTickCount() - t);
     vTaskDelete(NULL);
 }
-
 int main(void) {
     mux = xSemaphoreCreateMutex();
     xTaskCreate(Thread1, "thread1", 512, NULL, 3, NULL);
     xTaskCreate(Thread2, "thread2", 512, NULL, 5, NULL);
     vTaskStartScheduler();
 }
-
 Odp:
 T = 2000
 

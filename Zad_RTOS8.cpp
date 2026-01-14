@@ -21,7 +21,6 @@ int main(void) {
     xTaskCreate(Thread1, "thread1", 512, NULL, 4, NULL);
     vTaskStartScheduler();
 }
-
 Odp:
 Thread1
 Thread2
