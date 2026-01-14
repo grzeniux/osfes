@@ -23,3 +23,10 @@ int main(void) {
     vTaskStartScheduler();
 }
 
+1. Thread2 startuje jako pierwszy bo ma wyższy prioryter
+2. Thread2 zwieksza swój counter na 1 i wpada w vTaskDelay(1)
+3. W tym czasie Thread1 sie ząłącza i zwiększa counter na 2
+4. Thread2 jako pierwszy doliczy do 1000 i ustawi flage run=0 i wpada w vTaskDelay(1)
+5. Thread1 nie wejdzie juz do pętli bo widzi, że run=0 i zrobi printf("counter=999") poczym sie usunie
+6. Thread2 dokonczy swoje zadanie i wypisze counter=1000
+
