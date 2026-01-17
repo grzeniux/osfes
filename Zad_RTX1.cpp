@@ -31,7 +31,20 @@ int main(void) {
     osKernelStart();
 }
 
-// 1.  T=0: Semafor zostaje utworzony jako otwarty (wartość 1). `Thread2` usypia na 1000 ms.
-// 2.  T=0: `Thread1` próbuje zająć semafor funkcją `osSemaphoreAcquire` z czasem oczekiwania 0.
-// 3.  T=0: Ponieważ semafor jest wolny, `Thread1` zajmuje go natychmiast (funkcja zwraca sukces `osOK`), wypisuje "OK, " i przerywa pętlę.
-// 4.  T=0: Nie wystąpiło żadne opóźnienie w `Thread1`, więc różnica czasu wynosi 0. Wynik to `T = 0`.
+1. Start (main):
+    Semafor zostaje utworzony: osSemaphoreNew(1, 1, NULL). 
+    Oznacza to: wartość maksymalna 1, wartość początkowa 1. Semafor jest "otwarty" (dostępny).
+    Uruchamiane są wątki Thread1 i Thread2.
+
+2. Thread2 (T = 0):
+    Wykonuje osDelay(1000), czyli idzie spać na 1000 jednostek czasu (ticków).
+
+3. Thread1 (T = 0):
+    Pobiera aktualny czas: t = 0.
+    Wchodzi do pętli for.
+    Wykonuje osSemaphoreAcquire(sem, 0). 
+    Ponieważ semafor przy starcie miał wartość 1, wątek zajmuje go 
+    natychmiast (zdejmuje 1 z licznika, licznik wynosi teraz 0).
+    Warunek if (osOK == ...) jest spełniony.
+    Program wypisuje: OK, .
+    break przerywa pętlę i wątek przechodzi do wypisania czasu.

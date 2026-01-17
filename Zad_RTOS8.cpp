@@ -21,3 +21,10 @@ int main(void) {
     xTaskCreate(Thread1, "thread1", 512, NULL, 4, NULL);
     vTaskStartScheduler();
 }
+Odp:
+Thread1
+Thread2
+
+1. Startuje Thread1, który woła Thread2 o mniejszym priorytecie więc jest kontynuowany Thread1
+2. Printujemy Thread1 i usuwamy wątek
+3. Wracamy do Thread2, wykonuje się pętla i printujemy Thread2

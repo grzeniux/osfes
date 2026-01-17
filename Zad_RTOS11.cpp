@@ -11,7 +11,6 @@ void Thread(void* param) {
         if (counter == 1000) {
             run = 0;
         }
-        vTaskDelay(1);
     }
     printf("counter = %d\n", counter);
     vTaskDelete(NULL);
@@ -22,3 +21,9 @@ int main(void) {
     xTaskCreate(Thread, "thread2", 512, NULL, 4, NULL);
     vTaskStartScheduler();
 }
+Odp:
+Counter=1000
+Counter=0
+
+1. Startujemy z Thread2, który zwiększy zmienną counter aż do 1000 i ustawi run=0 printując counter=1000 i usunie się
+2. Startuje Thread1 i wypisze counter=0,
